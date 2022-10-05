@@ -1,4 +1,4 @@
-#+TITLE: Terraform in depth 
+#+TITLE: Terraform 
 
 * Preface
 
@@ -47,3 +47,66 @@ The apply command is used to apply the changes required to reach the desired sta
 ** destroy
 
 The destroy command is used to destroy the Terraform-managed infrastructure.
+
+* Basic Building Blocks
+
+** Provider
+
+The provider block is used to configure the named provider, in our case Azure.
+The Azure provider is used to interact with the many resources supported by Azure Resource Manager (AzureRM) through its APIs.
+
+#+BEGIN_SRC
+provider "azurerm" {
+  version = "=2.0.0"
+  features {}
+}
+#+END_SRC
+
+The version argument is used to pin the version of the Azure provider.
+This is recommended to ensure that the same version of the provider is used across all team members, CI/CD systems, and environments.
+
+The features block is used to enable and disable specific features of the provider.
+In this case, we are enabling the features block which is required for Terraform 0.12 and later.
+
+** Resource Group
+
+The resource group is a logical container into which Azure resources are deployed and managed.
+All resources must be deployed into a resource group, and a resource group may contain any number of resources.
+
+#+BEGIN_SRC
+resource "azurerm_resource_group" "rg" {
+  name     = "terraform-rg"
+  location = "West Europe"
+}
+
+output "resource_group_name" {
+  value = azurerm_resource_group.rg.name
+}
+
+output "resource_group_location" {
+  value = azurerm_resource_group.rg.location
+}
+
+#+END_SRC
+
+The resource block is used to declare a resource.
+In this case, we are declaring an Azure resource group.
+
+The name argument is used to specify the name of the resource group.
+This name must be unique within the subscription.
+
+The location argument is used to specify the supported Azure location where the resource group should exist.
+Changing this forces a new resource to be created.
+
+The output block is used to expose a computed value as an output.
+In this case, we are exposing the id, name, location, and tags of the resource group.
+
+** Virtual Network
+
+The virtual network is a representation of your own network in the cloud.
+
+
+
+
+
+
